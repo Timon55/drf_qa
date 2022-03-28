@@ -14,7 +14,34 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = ['url', 'name']
 
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ['text']
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    answers = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Question
+        fields = ['text','answers']
+
+
 class TopicListSerializer(serializers.ModelSerializer):
+    tests = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = Topic
         fields = '__all__'
+
+
+class TestSerializer(serializers.ModelSerializer):
+    Questions = QuestionSerializer(many=True)
+
+    class Meta:
+        model = Test
+        fields = ['title', 'Questions']
+
+

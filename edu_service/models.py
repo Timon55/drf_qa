@@ -15,7 +15,7 @@ class Question(models.Model):
         return self.text
 
 class Answer(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
     text=models.CharField(verbose_name='Ответ', max_length=250)
     right = models.BooleanField(verbose_name='Правильный', default=False)
 

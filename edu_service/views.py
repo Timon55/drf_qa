@@ -30,3 +30,11 @@ class TopicViewSet(viewsets.ModelViewSet):
     serializer_class = TopicListSerializer
     permission_classes = [IsAuthenticated]
 
+
+class TestViewSet(viewsets.ModelViewSet):
+    queryset = Test.objects.all()
+    serializer_class = TestSerializer
+    permission_classes = [IsAuthenticated]
+
+
+
