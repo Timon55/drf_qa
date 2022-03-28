@@ -1,8 +1,9 @@
 from rest_framework import viewsets
 from rest_framework.generics import (ListCreateAPIView,RetrieveUpdateDestroyAPIView,)
 from django.contrib.auth.models import User, Group
+from edu_service.models import *
 from rest_framework.permissions import IsAuthenticated
-from edu_service.serializers import UserSerializer, GroupSerializer
+from edu_service.serializers import *
 from edu_service.permissions import *
 
 
@@ -22,3 +23,10 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [IsAuthenticated]
+
+
+class TopicViewSet(viewsets.ModelViewSet):
+    queryset = Topic.objects.all()
+    serializer_class = TopicListSerializer
+    permission_classes = [IsAuthenticated]
+
