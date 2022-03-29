@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User, Group
 from edu_service.models import *
 from rest_framework import serializers
+from rest_framework.generics import ListAPIView, ListCreateAPIView
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -45,3 +46,40 @@ class TestSerializer(serializers.ModelSerializer):
         fields = ['title', 'Questions']
 
 
+class TestResultSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(many=False)
+
+    class Meta:
+        model = Test_Result
+        fields = ('__all__')
+
+    def create(self, request):
+        data = request.data
+        print(data)
+
+        test = Test.objects.get(id=data['testId'])
+        user = User.objects.get(username=data['username'])
+
+        test_result = Test_Result()
+        test_result.test = test
+        test_result.user = user
+
+        questions = [q for q in test.questions.all()]
+        answers = [data['answers'][a] for a in range(len(data['answers']))]
+
+        answered_correct_count = 0
+        for i in range(len(questions)):
+            answers_for_question = questions[i].answers.all()
+            num_right = questions[i].num_right
+            right_answer = []
+            if num_right == len([answers[i]]):
+                for j in answers_for_question:
+                    if j.right:
+                        right_answer.append(j)
+                if right_answer.sort() == [answers[i]].sort():
+                    answered_correct_count += 1
+
+        result = answered_correct_count / len(questions) * 100
+        test_result.result = str(result)
+        test_result.save()
+        return test_result

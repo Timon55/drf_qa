@@ -10,3 +10,7 @@ router.register(r'test', TestViewSet)
 router.register(r'test/<int:pk>', TestViewSet)
 
 urlpatterns = router.urls
+
+urlpatterns += [path('test-result/', TestResultsListView.as_view()),
+                path('test-result/create/', TestResultsCreateView.as_view()),
+                ]

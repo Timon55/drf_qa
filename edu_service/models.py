@@ -29,7 +29,7 @@ class Answer(models.Model):
 
 class Test(models.Model):
     title = models.CharField(verbose_name='Тема', max_length=250)
-    Questions = models.ManyToManyField(Question)
+    questions = models.ManyToManyField(Question)
 
     class Meta:
         verbose_name = 'Тест'
@@ -56,6 +56,11 @@ class Test_Result(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
     result = models.CharField(verbose_name='Результат', max_length=300)
+
+    class Meta:
+        verbose_name = 'Результат'
+        verbose_name_plural = 'Результаты'
+        ordering = ['id']
 
     def __str__(self):
         return self.user.username
