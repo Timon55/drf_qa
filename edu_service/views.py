@@ -37,18 +37,25 @@ class TopicViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
+class TheoryViewSet(viewsets.ModelViewSet):
+    queryset = Topic.objects.all()
+    serializer_class = TheoryListSerializer
+    permission_classes = [IsAuthenticated]
+
+
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
     permission_classes = [IsAuthenticated]
 
 
+
 class TestResultsListView(ListAPIView):
     serializer_class = TestResultSerializer
-
+    permission_classes = [IsAuthenticated]
     def get_queryset(self):
         queryset = Test_Result.objects.all()
-        print(self.request.query_params)
+        #print(self.request.query_params)
         username = self.request.query_params.get('username', None)
         if username is not None:
             queryset = queryset.filter(user__username=username)
@@ -60,7 +67,8 @@ class TestResultsCreateView(CreateAPIView):
     queryset = Test_Result.objects.all()
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
+        print(request.user)
         print(request.data)
         serializer = TestResultSerializer(data=request.data)
         serializer.is_valid()
@@ -68,6 +76,8 @@ class TestResultsCreateView(CreateAPIView):
         if test_result:
             return Response(status=HTTP_201_CREATED)
         return Response(status=HTTP_400_BAD_REQUEST)
+
+
 
 
 

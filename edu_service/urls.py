@@ -6,6 +6,8 @@ router.register(r'users', UserViewSet)
 router.register(r'groups', GroupViewSet)
 router.register(r'topics', TopicViewSet)
 router.register(r'topics/<int:pk>', TopicViewSet)
+router.register(r'theory', TheoryViewSet)
+router.register(r'theory/<int:pk>', TheoryViewSet)
 router.register(r'test', TestViewSet)
 router.register(r'test/<int:pk>', TestViewSet)
 

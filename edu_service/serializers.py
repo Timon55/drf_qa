@@ -27,7 +27,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['text','answers']
+        fields = ['text', 'answers']
 
 
 class TopicListSerializer(serializers.ModelSerializer):
@@ -37,13 +37,19 @@ class TopicListSerializer(serializers.ModelSerializer):
         model = Topic
         fields = '__all__'
 
+class TheoryListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Topic
+        fields = ['id','theory']
+
 
 class TestSerializer(serializers.ModelSerializer):
-    Questions = QuestionSerializer(many=True)
+    questions = QuestionSerializer(many=True)
 
     class Meta:
         model = Test
-        fields = ['title', 'Questions']
+        fields = ['title', 'questions']
 
 
 class TestResultSerializer(serializers.ModelSerializer):
@@ -56,9 +62,9 @@ class TestResultSerializer(serializers.ModelSerializer):
     def create(self, request):
         data = request.data
         print(data)
-
+        print(request.user)
         test = Test.objects.get(id=data['testId'])
-        user = User.objects.get(username=data['username'])
+        user = User.objects.get(username=request.user)
 
         test_result = Test_Result()
         test_result.test = test
@@ -80,6 +86,10 @@ class TestResultSerializer(serializers.ModelSerializer):
                     answered_correct_count += 1
 
         result = answered_correct_count / len(questions) * 100
-        test_result.result = str(result)
+        full_result = 'Количество правильных ответов: ' + str(answered_correct_count) + '\n'
+        full_result += 'Количество неправильных ответов: ' + str((len(questions)-answered_correct_count)) + '\n'
+        full_result += 'Количество баллов: ' + str(result) + '\n'
+        test_result.result = full_result
+        print(test_result.result)
         test_result.save()
         return test_result
