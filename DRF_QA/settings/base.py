@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from settings.local import SECRET_KEY, DATABASES, EMAIL_HOST,\
+    EMAIL_PORT, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER, EMAIL_USE_TLS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from edu_service.apps import EduServiceConfig
@@ -23,7 +25,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@xz^kckdo8)5&f+_rq*nhmrn4(1no^=_p2y%7v6(5-i%@hdc@n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -83,16 +84,7 @@ WSGI_APPLICATION = 'DRF_QA.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_db',
-        'USER' : 'drf_test',
-        'PASSWORD' : 'password',
-        'HOST' : '127.0.0.1',
-        'PORT' : '5432',
-    }
-}
+DATABASES={}
 
 
 # Password validation
@@ -148,11 +140,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10,
 }
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'timofeynagih@gmail.com'
-EMAIL_HOST_PASSWORD = 'rfvtgbyhn'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+
 
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
