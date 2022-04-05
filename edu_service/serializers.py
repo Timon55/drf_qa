@@ -27,7 +27,46 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['text', 'answers']
+        fields = ['id', 'text', 'answers']
+
+
+class UserAnswersSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(many=False)
+
+    class Meta:
+        model = UserAnswer
+        fields = ('__all__')
+
+    def create(self, request):
+        data = request.data
+        print(data)
+        print(request.user)
+        question = Question.objects.get(id=data['questionId'])
+        user = User.objects.get(username=request.user)
+        testId = Test.objects.get(id=data['testId'])
+        answers = data['answers']
+        user_answer = UserAnswer()
+        user_answer.user = user
+        user_answer.question = question
+        user_answer.testId = testId
+        user_answer.answers = answers
+        answers_for_question = question.answers.all()
+        right_answer = []
+        list_answers = answers.split(',')
+        for j in answers_for_question:
+            if j.right:
+                right_answer.append(j.text)
+        print(right_answer)
+        print(list_answers)
+        print(right_answer == list_answers)
+        if right_answer == list_answers:
+            right = True
+        else:
+            right = False
+        user_answer.right = right
+        user_answer.save()
+        return user_answer
+
 
 
 class TopicListSerializer(serializers.ModelSerializer):
@@ -49,7 +88,7 @@ class TestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Test
-        fields = ['title', 'questions']
+        fields = ['id', 'title', 'questions']
 
 
 class TestResultSerializer(serializers.ModelSerializer):
@@ -69,25 +108,14 @@ class TestResultSerializer(serializers.ModelSerializer):
         test_result = Test_Result()
         test_result.test = test
         test_result.user = user
-
-        questions = [q for q in test.questions.all()]
-        answers = [data['answers'][a] for a in range(len(data['answers']))]
-
         answered_correct_count = 0
-        for i in range(len(questions)):
-            answers_for_question = questions[i].answers.all()
-            num_right = questions[i].num_right
-            right_answer = []
-            if num_right == len([answers[i]]):
-                for j in answers_for_question:
-                    if j.right:
-                        right_answer.append(j)
-                if right_answer.sort() == [answers[i]].sort():
-                    answered_correct_count += 1
-
-        result = answered_correct_count / len(questions) * 100
+        answers = UserAnswer.objects.filter(user__username=request.user, testId=test)
+        for a in answers:
+            if a.right:
+                answered_correct_count +=1
+        result = answered_correct_count / len(answers) * 100
         full_result = 'Количество правильных ответов: ' + str(answered_correct_count) + '\n'
-        full_result += 'Количество неправильных ответов: ' + str((len(questions)-answered_correct_count)) + '\n'
+        full_result += 'Количество неправильных ответов: ' + str((len(answers)-answered_correct_count)) + '\n'
         full_result += 'Количество баллов: ' + str(result) + '\n'
         test_result.result = full_result
         print(test_result.result)

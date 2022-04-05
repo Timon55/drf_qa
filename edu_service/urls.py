@@ -15,4 +15,6 @@ urlpatterns = router.urls
 
 urlpatterns += [path('test-result/', TestResultsListView.as_view()),
                 path('test-result/create/', TestResultsCreateView.as_view()),
+                path('user-answer/', UserAnswerListView.as_view()),
+                path('user-answer/create/', UserAnswerCreateView.as_view())
                 ]

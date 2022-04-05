@@ -65,3 +65,20 @@ class Test_Result(models.Model):
     def __str__(self):
         return self.user.username
 
+
+class UserAnswer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    testId = models.ForeignKey(Test, on_delete=models.CASCADE)
+    answers = models.CharField(max_length=1000)
+    right = models.BooleanField()
+
+    class Meta:
+        unique_together=('user', 'question', 'testId')
+        verbose_name = 'Ответ Пользователя'
+        verbose_name_plural = 'Ответы пользователей'
+        ordering = ['id']
+
+    def __str__(self):
+        return self.user.username
+
